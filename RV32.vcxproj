@@ -130,7 +130,13 @@
     <ClCompile Include="source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="addlarge.bin" />
+    <None Include="task1\addlarge.bin" />
+    <None Include="task1\addneg.bin" />
+    <None Include="task1\addpos.bin" />
+    <None Include="task1\bool.bin" />
+    <None Include="task1\set.bin" />
+    <None Include="task1\shift.bin" />
+    <None Include="task1\shift2.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

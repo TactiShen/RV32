@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Task1">
+      <UniqueIdentifier>{442da8fc-7b79-47fc-8d91-6a879753dbc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source.cpp">
@@ -20,8 +23,26 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="addlarge.bin">
-      <Filter>Resource Files</Filter>
+    <None Include="task1\addlarge.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\addneg.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\addpos.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\bool.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\set.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\shift.bin">
+      <Filter>Resource Files\Task1</Filter>
+    </None>
+    <None Include="task1\shift2.bin">
+      <Filter>Resource Files\Task1</Filter>
     </None>
   </ItemGroup>
 </Project>
