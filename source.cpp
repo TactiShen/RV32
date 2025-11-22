@@ -22,11 +22,11 @@ int main()
     uint32_t mem_start_addr = 0x0;
     std::string TestFile;
     std::string ResFile;
-    std::string FileName = "shift2.bin";
+    std::string FileName = "branchmany.bin";
     bool is_running = false;
 
     // Read from the text file
-    TestFile = (char *)"task1/" + FileName;
+    TestFile = (char *)"task2/" + FileName;
     ResFile = (char *)"test_res/" + FileName;
 
     std::ifstream MyReadFile(TestFile, std::ios::in | std::ios::binary);
@@ -72,12 +72,14 @@ int main()
         uint32_t rd = (instr >> 7) & 0x01f;
         uint32_t rs1 = (instr >> 15) & 0x01f;
         uint32_t rs2 = (instr >> 20) & 0x1F;
+        int32_t offset = (((instr >> 8) & 0xF) | (((instr >> 25) & 0x3F) << 4) | (((instr >> 7) & 0x1) << 10) | ((((int32_t)instr) >> 31)) << 11) << 1; //this is so weirdly written jesus fuck
 
         uint32_t funct3 = (instr >> 12) & 0x7; //14 - 12
         uint32_t funct7 = (instr >> 25) & 0x7F; // 31-25
         int32_t imm = ((int32_t)instr >> 20);
         uint32_t result;
 
+        next_pc = pc + 4;
         switch (opcode) {
             case 0x13: {// immediate functions
                 //uint32_t funct3 = (instr >> 12) & 0x7; //shift right by 12 bit anding with bit mask 0b111
@@ -201,7 +203,8 @@ int main()
 
                         default: {
                             std::cout << "funct7 " << funct7 << " not yet implemented" << std::endl;
-                            return 1;
+                            break;
+                            
                         }
                     }
                 }
@@ -222,12 +225,56 @@ int main()
                 break;
             }
 
+            case 0x63: { // branches //it's giving fallthrougs and idk why
+                bool branch = false;
+                switch (funct3) {
+                    case 0x0: {// beq
+                        branch = reg[rs1] == reg[rs2];
+                        break;
+                    }
+
+                    case 0x1: {// bne
+                        branch = reg[rs1] != reg[rs2];
+                        break;
+                    }
+
+                    case 0x4: {// blt
+                        branch = (int32_t)reg[rs1] < (int32_t)reg[rs2];
+                        break;
+                    }
+
+                    case 0x5: {// bge
+                        branch = (int32_t)reg[rs1] >= (int32_t)reg[rs2];
+                        break;
+                    }
+
+                    case 0x6: {// bltu
+                        branch = reg[rs1] < reg[rs2];
+                        break;
+                    }
+
+                    case 0x7: {// bgeu
+                        branch = reg[rs1] >= reg[rs2];
+                        break;
+                    }
+                
+                    default: { //fix later don't need this I think
+                        std::cout << "funct3 " << funct3 << " not yet implemented" << std::endl;
+                        break;
+                    }
+                }
+                if (branch) {
+                    next_pc = (int32_t)pc + offset;
+                }
+                    
+            }
+
             default: {
                 std::cout << "Opcode " << opcode << " not yet implemented" << std::endl;
                 break;
             }
         }
-        pc += 4; // One instruction is four bytes
+        pc = next_pc; // One instruction is four bytes
 
         if (instr == 0) { // TODO: remove this
             is_running = false;
@@ -240,7 +287,7 @@ int main()
         bool same[32] = {};
         same[i] = (reg[i] == Resultreg[i]);
         // kinda long and hard to read might improve later
-        printf("reg %d: %08X %resReg %d: %08X || Correct: %s\n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
+        printf("reg %d: %08X resReg %d: %08X || Correct: %s \n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
     }
     return 0;
 
