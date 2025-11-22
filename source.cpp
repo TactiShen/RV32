@@ -5,9 +5,10 @@
 #include <cstdint>
 #include <memory>
 #include <array>
+#include <string.h>
 
-constexpr auto MEM_SIZE = 0x40000; //This gives us 1 MB of memory
-constexpr auto FileName = "task1/shift2.bin"; //File to read from
+constexpr auto MEM_SIZE = 0x40000; //This gives us 1 MB of memory //maybe 0x100000
+//constexpr auto FileName = "shift2.bin"; //File to read from
 uint32_t mem[MEM_SIZE] = {}; //might need to have this global or do memory allocation
 
 int main()
@@ -15,18 +16,24 @@ int main()
 
     // Create a text string, which is used to output the text file
     uint32_t reg[32] = {};
+    uint32_t Resultreg[32] = {};
     uint32_t pc = 0x0;
     uint32_t next_pc = 0x0;
     uint32_t mem_start_addr = 0x0;
-
+    std::string TestFile;
+    std::string ResFile;
+    std::string FileName = "shift2.bin";
     bool is_running = false;
 
     // Read from the text file
-    std::ifstream MyReadFile(FileName, std::ios::in | std::ios::binary);
+    TestFile = (char *)"task1/" + FileName;
+    ResFile = (char *)"test_res/" + FileName;
+
+    std::ifstream MyReadFile(TestFile, std::ios::in | std::ios::binary);
     
     //You won't need this when it's working, mostly for making sure VS is working
     if (!MyReadFile.is_open()) {
-        std::cout << "ERROR: Could not open " << FileName << std::endl;
+        std::cout << "ERROR: Could not open " << TestFile << std::endl;
         std::cout << "Current directory: ";
         system("cd");  // Print current directory
         return 1;
@@ -38,7 +45,21 @@ int main()
     // Close the file
     MyReadFile.close();
 
-    //prints out the content of mem to check if read correctly
+    
+    std::ifstream MyReadFile2(ResFile, std::ios::in | std::ios::binary);
+    // You won't need this when it's working, mostly for making sure VS is working
+    if (!MyReadFile2.is_open()) {
+        std::cout << "ERROR: Could not open " << ResFile << std::endl;
+        std::cout << "Current directory: ";
+        system("cd");  // Print current directory
+        return 1;
+    }
+
+    // I feel like MEM_SIZE should be too large here need to look in to the .read thingy
+    MyReadFile2.read((char*)Resultreg, MEM_SIZE);
+
+    // Close the file
+    MyReadFile2.close();
     
     is_running = true;
     reg[0] = 0; // should be a noop
@@ -216,7 +237,10 @@ int main()
 
     for (int i = 0; i < 32; i++)
     {
-        printf("reg %d: %08X \n", i, reg[i]);
+        bool same[32] = {};
+        same[i] = (reg[i] == Resultreg[i]);
+        // kinda long and hard to read might improve later
+        printf("reg %d: %08X %resReg %d: %08X || Correct: %s\n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
     }
     return 0;
 

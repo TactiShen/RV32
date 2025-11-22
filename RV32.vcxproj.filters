@@ -25,6 +25,30 @@
     <Filter Include="Resource Files\Task4">
       <UniqueIdentifier>{77d2a8b3-108e-4419-91d6-aa8187ad3371}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Task2\TestCode">
+      <UniqueIdentifier>{2d42543f-d297-400f-bdb9-4043ce322e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task1\TestCode">
+      <UniqueIdentifier>{e15eca27-98e1-4218-a1d9-4efdbed617a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task3\TestCode">
+      <UniqueIdentifier>{af7b8669-c364-4185-81ff-b5896249083d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task4\TestCode">
+      <UniqueIdentifier>{c5820e54-a2f8-4c7d-8e75-6756e9e63a33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task4\ResultFiles">
+      <UniqueIdentifier>{d626cec8-a5a1-4186-a442-58a154edce5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task3\ResultFiles">
+      <UniqueIdentifier>{573cf74f-d006-416e-bc25-aa256aa6ecc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task2\ResultFiles">
+      <UniqueIdentifier>{20948601-f1a7-4373-acfe-122f39d0ba6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Task1\ResultFiles">
+      <UniqueIdentifier>{47ab8a8f-0be3-46a9-be74-ab1549da963e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source.cpp">
@@ -32,92 +56,179 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="task1\shift2.bin">
+      <Filter>Resource Files\Task1\TestCode</Filter>
+    </None>
     <None Include="task1\addlarge.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
     <None Include="task1\addneg.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
     <None Include="task1\addpos.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
     <None Include="task1\bool.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
     <None Include="task1\set.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
     <None Include="task1\shift.bin">
-      <Filter>Resource Files\Task1</Filter>
+      <Filter>Resource Files\Task1\TestCode</Filter>
     </None>
-    <None Include="task1\shift2.bin">
-      <Filter>Resource Files\Task1</Filter>
+    <None Include="test_res\addlarge.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
     </None>
-    <None Include="task2\branchcnt.bin">
-      <Filter>Resource Files\Task2</Filter>
+    <None Include="test_res\addneg.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
     </None>
-    <None Include="task2\branchmany.bin">
-      <Filter>Resource Files\Task2</Filter>
+    <None Include="test_res\addpos.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\bool.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\set.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\shift.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\shift2.bin">
+      <Filter>Resource Files\Task1\ResultFiles</Filter>
     </None>
     <None Include="task2\branchtrap.bin">
-      <Filter>Resource Files\Task2</Filter>
+      <Filter>Resource Files\Task2\TestCode</Filter>
     </None>
-    <None Include="task3\loop.bin">
-      <Filter>Resource Files\Task3</Filter>
+    <None Include="task2\branchcnt.bin">
+      <Filter>Resource Files\Task2\TestCode</Filter>
     </None>
-    <None Include="task3\recursive.bin">
-      <Filter>Resource Files\Task3</Filter>
-    </None>
-    <None Include="task3\string.bin">
-      <Filter>Resource Files\Task3</Filter>
+    <None Include="task2\branchmany.bin">
+      <Filter>Resource Files\Task2\TestCode</Filter>
     </None>
     <None Include="task3\width.bin">
-      <Filter>Resource Files\Task3</Filter>
+      <Filter>Resource Files\Task3\TestCode</Filter>
+    </None>
+    <None Include="task3\loop.bin">
+      <Filter>Resource Files\Task3\TestCode</Filter>
+    </None>
+    <None Include="task3\recursive.bin">
+      <Filter>Resource Files\Task3\TestCode</Filter>
+    </None>
+    <None Include="task3\string.bin">
+      <Filter>Resource Files\Task3\TestCode</Filter>
     </None>
     <None Include="task4\t1.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t2.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t3.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t4.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t5.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t6.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t7.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t8.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t9.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t10.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t11.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t12.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t13.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t14.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
     </None>
     <None Include="task4\t15.bin">
-      <Filter>Resource Files\Task4</Filter>
+      <Filter>Resource Files\Task4\TestCode</Filter>
+    </None>
+    <None Include="test_res\branchcnt.bin">
+      <Filter>Resource Files\Task2\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\branchmany.bin">
+      <Filter>Resource Files\Task2\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\branchtrap.bin">
+      <Filter>Resource Files\Task2\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\loop.bin">
+      <Filter>Resource Files\Task3\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\recursive.bin">
+      <Filter>Resource Files\Task3\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\string.bin">
+      <Filter>Resource Files\Task3\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\width.bin">
+      <Filter>Resource Files\Task3\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t1.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t2.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t3.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t4.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t5.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t6.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t7.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t8.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t9.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t10.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t11.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t12.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t13.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t14.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
+    </None>
+    <None Include="test_res\t15.bin">
+      <Filter>Resource Files\Task4\ResultFiles</Filter>
     </None>
   </ItemGroup>
 </Project>
