@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
@@ -12,7 +11,6 @@ uint8_t mem[MEM_SIZE] = {}; //might need to have this global or do memory alloca
 
 int main()
 {
-
     // Create a text string, which is used to output the text file
     uint32_t reg[32] = {};
     uint32_t Resultreg[32] = {};
@@ -60,17 +58,72 @@ int main()
     // Close the file
     MyReadFile2.close();
 
-    // small helpers for byte-addressable memory (little-endian) 
-    auto read_u8 = [&](uint32_t addr)->uint8_t { return mem[addr]; };
-    auto read_i8 = [&](uint32_t addr)->int8_t { return (int8_t)mem[addr]; };
-    auto read_u16 = [&](uint32_t addr)->uint16_t { return (uint16_t)mem[addr] | ((uint16_t)mem[addr + 1] << 8); };
-    auto read_i16 = [&](uint32_t addr)->int16_t { return (int16_t)read_u16(addr); };
-    auto read_u32 = [&](uint32_t addr)->uint32_t { return (uint32_t)mem[addr] | ((uint32_t)mem[addr + 1] << 8) | ((uint32_t)mem[addr + 2] << 16) | ((uint32_t)mem[addr + 3] << 24); };
-    auto write_u8 = [&](uint32_t addr, uint8_t v) { mem[addr] = v; };
-    auto write_u16 = [&](uint32_t addr, uint16_t v) { mem[addr] = v & 0xFF; mem[addr + 1] = (v >> 8) & 0xFF; };
-    auto write_u32 = [&](uint32_t addr, uint32_t v) { mem[addr] = v & 0xFF; mem[addr + 1] = (v >> 8) & 0xFF; mem[addr + 2] = (v >> 16) & 0xFF; mem[addr + 3] = (v >> 24) & 0xFF; };
+    // checked memory helpers for byte-addressable memory (little-endian)
+    auto check_range = [&](uint32_t addr, uint32_t size) -> bool {
+        // Prevent overflow: require addr <= MEM_SIZE and addr+size <= MEM_SIZE
+        if (addr > MEM_SIZE || size > MEM_SIZE || addr + size > MEM_SIZE) {
+            std::cerr << "Memory access out of bounds: addr=0x" << std::hex << addr
+                      << " size=" << std::dec << size << " at pc=0x" << std::hex << pc << std::dec << "\n";
+            std::exit(1); // or set is_running=false and break gracefully
+            return false;
+        }
+        return true;
+    };
 
-    
+    auto check_align = [&](uint32_t addr, uint32_t align)->void {
+        if ((addr & (align - 1)) != 0) {
+            std::cerr << "Unaligned access: addr=0x" << std::hex << addr << " align=" << std::dec << align
+                      << " at pc=0x" << std::hex << pc << std::dec << "\n";
+            // Decide behavior: fatal, warn, or emulate
+            // std::exit(1);
+        }
+    };
+
+    auto read_u8 = [&](uint32_t addr)->uint8_t {
+        check_range(addr, 1);
+        return mem[addr];
+    };
+    auto read_i8 = [&](uint32_t addr)->int8_t {
+        check_range(addr, 1);
+        return (int8_t)mem[addr];
+    };
+    auto read_u16 = [&](uint32_t addr)->uint16_t {
+        check_range(addr, 2);
+        // optional alignment check:
+        // check_align(addr, 2);
+        return (uint16_t)mem[addr] | ((uint16_t)mem[addr + 1] << 8);
+    };
+    auto read_i16 = [&](uint32_t addr)->int16_t {
+        return (int16_t)read_u16(addr);
+    };
+    auto read_u32 = [&](uint32_t addr)->uint32_t {
+        check_range(addr, 4);
+        // optional alignment check:
+        // check_align(addr, 4);
+        return (uint32_t)mem[addr]
+            | ((uint32_t)mem[addr + 1] << 8)
+            | ((uint32_t)mem[addr + 2] << 16)
+            | ((uint32_t)mem[addr + 3] << 24);
+    };
+    auto write_u8 = [&](uint32_t addr, uint8_t v) {
+        check_range(addr, 1);
+        mem[addr] = v;
+    };
+    auto write_u16 = [&](uint32_t addr, uint16_t v) {
+        check_range(addr, 2);
+        // check_align(addr, 2);
+        mem[addr]     = v & 0xFF;
+        mem[addr + 1] = (v >> 8) & 0xFF;
+    };
+    auto write_u32 = [&](uint32_t addr, uint32_t v) {
+        check_range(addr, 4);
+        // check_align(addr, 4);
+        mem[addr]     = v & 0xFF;
+        mem[addr + 1] = (v >> 8) & 0xFF;
+        mem[addr + 2] = (v >> 16) & 0xFF;
+        mem[addr + 3] = (v >> 24) & 0xFF;
+    };
+
     is_running = true;
     reg[0] = 0; // should be a noop
     reg[2] = mem_start_addr + MEM_SIZE - 4;
@@ -193,7 +246,7 @@ int main()
                                 result = (int32_t)reg[rs1] >> (int32_t)(reg[rs2] & 0x1F);
                             else //srl
                                 result = (uint32_t)reg[rs1] >> (uint32_t)(reg[rs2] & 0x1F);
-                            
+
                             break;
                         }
 
@@ -367,17 +420,17 @@ int main()
             case 0x73: { // ecall
                 switch (reg[17]) {
                 case 0x1: {// print_int
-                    
+                    //unused
                     break;
                 }
 
                 case 0x2: {// print_float
-                    
+                    //unused
                     break;
                 }
 
                 case 0x4: {// print_string
-                    
+                    //unused
                     break;
                 }
 
@@ -387,27 +440,27 @@ int main()
                 }
 
                 case 0xB: {// print_char
-                    
+                    //unused
                     break;
                 }
 
                 case 0x22: {// print_hex
-                    
+                    //unused
                     break;
                 }
 
                 case 0x23: {// print_bin
-                    
+                    //unused
                     break;
                 }
 
                 case 0x24: {// print_unsigned
-                    
+                    //unused
                     break;
                 }
                 
                 case 0x5D: {// exit with status code
-                   
+                    //unused
                     break;
                 }
 
@@ -438,8 +491,8 @@ int main()
     {
         bool same[32] = {};
         same[i] = (reg[i] == Resultreg[i]);
-        // kinda long and hard to read might improve later
-        printf("reg %d: %08X resReg %d: %08X || Correct: %s \n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
+        printf("reg %02d: %08X resReg %02d: %08X || Correct: %s \n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
+        
     }
     return 0;
 
