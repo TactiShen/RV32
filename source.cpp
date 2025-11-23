@@ -7,9 +7,8 @@
 #include <array>
 #include <string.h>
 
-constexpr auto MEM_SIZE = 0x40000; //This gives us 1 MB of memory //maybe 0x100000
-//constexpr auto FileName = "shift2.bin"; //File to read from
-uint32_t mem[MEM_SIZE] = {}; //might need to have this global or do memory allocation
+constexpr auto MEM_SIZE = 0x100000; //This gives us 1 MB of memory //maybe 0x100000
+uint8_t mem[MEM_SIZE] = {}; //might need to have this global or do memory allocation
 
 int main()
 {
@@ -22,11 +21,11 @@ int main()
     uint32_t mem_start_addr = 0x0;
     std::string TestFile;
     std::string ResFile;
-    std::string FileName = "branchmany.bin";
+    std::string FileName = "t15.bin";
     bool is_running = false;
 
     // Read from the text file
-    TestFile = (char *)"task2/" + FileName;
+    TestFile = (char *)"task4/" + FileName;
     ResFile = (char *)"test_res/" + FileName;
 
     std::ifstream MyReadFile(TestFile, std::ios::in | std::ios::binary);
@@ -60,6 +59,17 @@ int main()
 
     // Close the file
     MyReadFile2.close();
+
+    // small helpers for byte-addressable memory (little-endian) 
+    auto read_u8 = [&](uint32_t addr)->uint8_t { return mem[addr]; };
+    auto read_i8 = [&](uint32_t addr)->int8_t { return (int8_t)mem[addr]; };
+    auto read_u16 = [&](uint32_t addr)->uint16_t { return (uint16_t)mem[addr] | ((uint16_t)mem[addr + 1] << 8); };
+    auto read_i16 = [&](uint32_t addr)->int16_t { return (int16_t)read_u16(addr); };
+    auto read_u32 = [&](uint32_t addr)->uint32_t { return (uint32_t)mem[addr] | ((uint32_t)mem[addr + 1] << 8) | ((uint32_t)mem[addr + 2] << 16) | ((uint32_t)mem[addr + 3] << 24); };
+    auto write_u8 = [&](uint32_t addr, uint8_t v) { mem[addr] = v; };
+    auto write_u16 = [&](uint32_t addr, uint16_t v) { mem[addr] = v & 0xFF; mem[addr + 1] = (v >> 8) & 0xFF; };
+    auto write_u32 = [&](uint32_t addr, uint32_t v) { mem[addr] = v & 0xFF; mem[addr + 1] = (v >> 8) & 0xFF; mem[addr + 2] = (v >> 16) & 0xFF; mem[addr + 3] = (v >> 24) & 0xFF; };
+
     
     is_running = true;
     reg[0] = 0; // should be a noop
@@ -67,7 +77,7 @@ int main()
 
     while (is_running) {
         //might be possible to organize this better
-        uint32_t instr = mem[pc >> 2];
+        uint32_t instr = read_u32(pc);
         uint32_t opcode = instr & 0x7f;
         uint32_t rd = (instr >> 7) & 0x01f;
         uint32_t rs1 = (instr >> 15) & 0x01f;
@@ -82,9 +92,6 @@ int main()
         next_pc = pc + 4;
         switch (opcode) {
             case 0x13: {// immediate functions
-                //uint32_t funct3 = (instr >> 12) & 0x7; //shift right by 12 bit anding with bit mask 0b111
-                //int32_t imm = ((int32_t)instr >> 20); //shift right by 20 bit result is 12 most significant bits
-                //uint32_t result;
                 switch (funct3) {
                 case 0x0: {// ADDI
                     result = (int32_t)reg[rs1] + imm; //unsure about the type cast on reg here
@@ -132,7 +139,7 @@ int main()
                 }
 
                 default: { //fix later don't need this I think
-                    std::cout << "funct3 " << funct3 << " not yet implemented" << std::endl;
+                    std::cout << "opcode: " << opcode << "funct3: " << funct3 << " not yet implemented" << std::endl;
                     return 1;
                 }
                 }
@@ -202,7 +209,7 @@ int main()
 
 
                         default: {
-                            std::cout << "funct7 " << funct7 << " not yet implemented" << std::endl;
+                            std::cout << "opcode: " << opcode << "funct7: " << funct7 << " not yet implemented" << std::endl;
                             break;
                             
                         }
@@ -225,7 +232,7 @@ int main()
                 break;
             }
 
-            case 0x63: { // branches //it's giving fallthrougs and idk why
+            case 0x63: { // branches
                 bool branch = false;
                 switch (funct3) {
                     case 0x0: {// beq
@@ -259,20 +266,165 @@ int main()
                     }
                 
                     default: { //fix later don't need this I think
-                        std::cout << "funct3 " << funct3 << " not yet implemented" << std::endl;
+                        std::cout << "opcode: " << opcode << "funct3: " << funct3 << " not yet implemented" << std::endl;
+
                         break;
                     }
                 }
                 if (branch) {
                     next_pc = (int32_t)pc + offset;
                 }
+				break;
                     
+            }
+
+            case 0x3: { // loads (I-type immediate used: imm)
+                uint32_t addr = (uint32_t)((int32_t)reg[rs1] + imm);
+                switch (funct3) {
+                case 0x0: {// lb
+                    int8_t val = read_i8(addr);
+                    if (rd != 0)
+                        reg[rd] = (int32_t)val;
+                    break;
+                }
+                case 0x1: {// lh
+                    int16_t val = read_i16(addr);
+                    if (rd != 0)
+                        reg[rd] = (int32_t)val;
+                    break;
+                }
+                case 0x2: {// lw
+                    if (rd != 0)
+                        reg[rd] = read_u32(addr);
+                    break;
+                }
+                case 0x4: {// lbu
+                    uint8_t val = read_u8(addr);
+                    if (rd != 0)
+                        reg[rd] = (uint32_t)val;
+                    break;
+                }
+                case 0x5: {// lhu
+                    uint16_t val = read_u16(addr);
+                    if (rd != 0)
+                        reg[rd] = (uint32_t)val;
+                    break;
+                }
+                default: {
+                    std::cout << "opcode: " << opcode << "funct3: " << funct3 << " not yet implemented" << std::endl;
+                    break;
+                }
+                }
+                break;
+            }
+
+            case 0x23: { // stores (S-type immediate must be constructed)
+                // construct S-type immediate: bits [31:25] <<5 | bits[11:7]
+                int32_t imm_s = (int32_t)(((instr >> 25) << 5) | ((instr >> 7) & 0x1F));
+                // sign-extend 12-bit immediate
+                imm_s = (imm_s << 20) >> 20;
+                uint32_t addr = (uint32_t)((int32_t)reg[rs1] + imm_s);
+                switch (funct3) {
+                case 0x0: {// sb
+                    uint8_t val = reg[rs2] & 0xFF;
+                    write_u8(addr, val);
+                    break;
+                }
+                case 0x1: {// sh
+                    uint16_t val = reg[rs2] & 0xFFFF;
+                    write_u16(addr, val);
+                    break;
+                }
+                case 0x2: {// sw
+                    write_u32(addr, reg[rs2]);
+                    break;
+                }
+                default: {
+                    std::cout << "opcode: " << opcode << "funct3: " << funct3 << " not yet implemented" << std::endl;
+                    break;
+                }
+                }
+                break;
+            }
+            
+            case 0x6F: { // jal
+                if (rd != 0)
+                    reg[rd] = pc + 4;
+				int32_t imm_j = (((instr >> 21) & 0x3FF) << 1) | (((instr >> 20) & 0x1) << 11) | (((instr >> 12) & 0xFF) << 12) | ((((int32_t)instr) >> 31) << 20); //imm[20|10:1|11|19:12]
+                imm_j = (imm_j << 11) >> 11; // sign-extend
+                next_pc = (int32_t)pc + imm_j;
+                break;
+			}
+
+            case 0x67: { // jalr
+                if (rd != 0)
+                    reg[rd] = pc + 4;
+				next_pc = ((int32_t)reg[rs1] + imm) & ~1; // set LSB to 0 (binary anding with ...1110)
+                break;
+			}
+
+
+            case 0x73: { // ecall
+                switch (reg[17]) {
+                case 0x1: {// print_int
+                    
+                    break;
+                }
+
+                case 0x2: {// print_float
+                    
+                    break;
+                }
+
+                case 0x4: {// print_string
+                    
+                    break;
+                }
+
+                case 0xA: {// exit
+                    is_running = false;
+                    break;
+                }
+
+                case 0xB: {// print_char
+                    
+                    break;
+                }
+
+                case 0x22: {// print_hex
+                    
+                    break;
+                }
+
+                case 0x23: {// print_bin
+                    
+                    break;
+                }
+
+                case 0x24: {// print_unsigned
+                    
+                    break;
+                }
+                
+                case 0x5D: {// exit with status code
+                   
+                    break;
+                }
+
+
+                default: { //fix later don't need this I think
+                    std::cout << "opcode: " << opcode << " a10 = " << reg[17] << " not yet implemented" << std::endl;
+                    break;
+                }
+                }
+                break;
             }
 
             default: {
                 std::cout << "Opcode " << opcode << " not yet implemented" << std::endl;
                 break;
             }
+            break;
         }
         pc = next_pc; // One instruction is four bytes
 
