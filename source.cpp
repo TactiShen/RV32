@@ -5,6 +5,7 @@
 #include <memory>
 #include <array>
 #include <string.h>
+#include <iomanip>
 
 constexpr auto MEM_SIZE = 0x100000; //This gives us 1 MB of memory
 uint8_t mem[MEM_SIZE] = {};
@@ -18,18 +19,27 @@ int main()
     uint32_t mem_start_addr = 0x0;
     std::string TestFile;
     std::string ResFile;
-    std::string FileName = "loop.bin";//File to read from
+    std::string FileName = "loop.bin";//File to read from 
     bool is_running = false;
+	bool using_folders = true; //if using unique folders for tests and results set to true, else false
 
     // Read from the text file
-    TestFile = (char *)"task3/" + FileName; //Folder containing the test file
-    ResFile = (char *)"test_res/" + FileName; //Folder containing the result file
+    if (using_folders) {
+        TestFile = (char*)"task3/" + FileName; //Folder containing the test file
+        ResFile = (char*)"test_res/" + FileName; //Folder containing the result file
+    }
+    else {
+        TestFile = FileName;
+    }
+    
 
     std::ifstream MyReadFile(TestFile, std::ios::in | std::ios::binary);
     
     if (!MyReadFile.is_open()) {
         std::cout << "ERROR: Could not open " << TestFile << std::endl;
         std::cout << "Current directory: ";
+        std::cout << "consider changing the using_folders value || " ;
+		std::cout << "currently set to: " << std::boolalpha << using_folders << std::endl;
         system("cd");  // Print current directory
         return 1;
     }
@@ -47,7 +57,7 @@ int main()
         std::cout << "ERROR: Could not open " << ResFile << std::endl;
         std::cout << "Current directory: ";
         system("cd");  // Print current directory
-        return 1;
+        //return 1;
     }
 
     // I feel like MEM_SIZE should be too large here need to look in to the .read thingy
@@ -421,13 +431,24 @@ int main()
         }
     }
 
-    for (int i = 0; i < 32; i++) //prints the content of all the registers after program is done running
+    if (using_folders)
     {
-        bool same[32] = {};
-        same[i] = (reg[i] == Resultreg[i]); //compares with the content of the result file
-        printf("reg %02d: %08X resReg %02d: %08X || Correct: %s \n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
-        
+        for (int i = 0; i < 32; i++) //prints the content of all the registers after program is done running
+        {
+            bool same[32] = {};
+            same[i] = (reg[i] == Resultreg[i]); //compares with the content of the result file
+            printf("reg %02d: %08X resReg %02d: %08X || Correct: %s \n", i, reg[i], i, Resultreg[i], same[i] ? "true" : "false");
+
+        }
     }
+    else
+    {
+        for (int i = 0; i < 32; i++) //prints the content of all the registers after program is done running
+        {
+            printf("reg %02d: %08X\n", i, reg[i]);
+        }
+	}
+   
     return 0;
 
 }
